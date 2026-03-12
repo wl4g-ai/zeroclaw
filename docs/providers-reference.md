@@ -47,7 +47,7 @@ credential is not reused for fallback providers.
 | `doubao` | `volcengine`, `ark`, `doubao-cn` | No | `ARK_API_KEY`, `DOUBAO_API_KEY` |
 | `siliconflow` | `silicon-cloud`, `siliconcloud` | No | `SILICONFLOW_API_KEY` |
 | `hunyuan` | `tencent` | No | `HUNYUAN_API_KEY` |
-| `qwen` | `dashscope`, `qwen-intl`, `dashscope-intl`, `qwen-us`, `dashscope-us`, `qwen-code`, `qwen-oauth`, `qwen_oauth` | No | `QWEN_OAUTH_TOKEN`, `DASHSCOPE_API_KEY` |
+| `qwen` | `dashscope`, `qwen-intl`, `dashscope-intl`, `qwen-us`, `dashscope-us`, `qwen-code`, `qwen-oauth`, `qwen_oauth`, `qwen-coding-plan` | No | `QWEN_OAUTH_TOKEN`, `DASHSCOPE_API_KEY` |
 | `groq` | — | No | `GROQ_API_KEY` |
 | `mistral` | — | No | `MISTRAL_API_KEY` |
 | `xai` | `grok` | No | `XAI_API_KEY` |
@@ -110,13 +110,18 @@ default_model = "qwen2.5-coder:7b"
 
 ### Qwen (Alibaba Cloud) Notes
 
-- Provider IDs: `qwen`, `qwen-code` (OAuth), `qwen-oauth`, `dashscope`, `qwen-intl`, `qwen-us`
+- Provider IDs: `qwen`, `qwen-code` (OAuth), `qwen-oauth`, `qwen-coding-plan`, `dashscope`, `qwen-intl`, `qwen-us`
 - **OAuth Free Tier**: Use `qwen-code` or set `api_key = "qwen-oauth"` in config
   - Endpoint: `portal.qwen.ai/v1`
   - Credentials: `~/.qwen/oauth_creds.json` (use `qwen login` to authenticate)
   - Daily quota: 1000 requests
   - Available model: `qwen3-coder-plus` (verified 2026-02-24)
   - Context window: ~32K tokens
+- **Coding Plan Tier**: Use `qwen-coding-plan` with `DASHSCOPE_API_KEY`
+  - Endpoint: `coding.dashscope.aliyuncs.com/v1`
+  - User-Agent: `QwenCodingPlan/1.0` (automatically set by ZeroClaw)
+  -专为编程工具设计的 endpoint，对标 OpenClaw 的 Qwen Code-Plan 支持
+  - 适用于 ZeroClaw 等 AI 编程助手场景
 - **API Key Access**: Use `qwen` or `dashscope` provider with `DASHSCOPE_API_KEY`
   - Endpoint: `dashscope.aliyuncs.com/compatible-mode/v1`
   - Higher quotas and more models available with paid API key

@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "[LOCAL] daemon",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--features",
+                    "observability-otel"
+                ],
+                "filter": {
+                    "name": "zeroclaw",
+                    "kind": "bin"
+                },
+            },
+            "program": "${workspaceFolder}/target/debug/zeroclaw",
+            "env": {
+                "RUST_BACKTRACE": "full",
+                "ZEROCLAW_AUTOSTART_CHANNELS": "1",
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "daemon",
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "[LOCAL] gateway",
+            "cargo": {
+                "args": [
+                    "build",
+                ],
+                "filter": {
+                    "name": "zeroclaw",
+                    "kind": "bin"
+                },
+            },
+            "program": "${workspaceFolder}/target/debug/zeroclaw",
+            "env": {
+                "RUST_BACKTRACE": "full",
+                "ZEROCLAW_AUTOSTART_CHANNELS": "1",
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "gateway",
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1336,6 +1336,24 @@ fn create_provider_with_url_and_options(
                 ),
             ))
         }
+        name if is_qwen_coding_plan_alias(name) => {
+            let base_url = api_url
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .map(ToString::to_string)
+                .unwrap_or_else(|| QWEN_CODING_PLAN_BASE_URL.to_string());
+
+            Ok(Box::new(
+                OpenAiCompatibleProvider::new_with_user_agent_and_vision(
+                    "Qwen Coding Plan",
+                    &base_url,
+                    key,
+                    AuthStyle::Bearer,
+                    "QwenCodingPlan/1.0",
+                    true,
+                ),
+            ))
+        }
         "hunyuan" | "tencent" => Ok(Box::new(OpenAiCompatibleProvider::new(
             "Hunyuan",
             "https://api.hunyuan.cloud.tencent.com/v1",
@@ -2765,6 +2783,10 @@ mod tests {
         let oauth_provider =
             create_provider("qwen-code", Some("key")).expect("qwen oauth provider should build");
         assert!(oauth_provider.supports_vision());
+
+        let coding_plan_provider = create_provider("qwen-coding-plan", Some("key"))
+            .expect("qwen-coding-plan provider should build");
+        assert!(coding_plan_provider.supports_vision());
     }
 
     #[test]
