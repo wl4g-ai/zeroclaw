@@ -1,7 +1,8 @@
-# syntax=docker/dockerfile:1.7
+# syntax=registry.cn-shenzhen.aliyuncs.com/wl4g/docker_dockerfile:1.7
 
 # ── Stage 1: Build ────────────────────────────────────────────
-FROM rust:1.93-slim@sha256:7e6fa79cf81be23fd45d857f75f583d80cfdbb11c91fa06180fd747fda37a61d AS builder
+#FROM rust:1.93-slim@sha256:7e6fa79cf81be23fd45d857f75f583d80cfdbb11c91fa06180fd747fda37a61d AS builder
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/rust:1.93-slim as builder
 
 WORKDIR /app
 ARG ZEROCLAW_CARGO_FEATURES=""
@@ -41,6 +42,7 @@ RUN --mount=type=cache,id=zeroclaw-cargo-registry,target=/usr/local/cargo/regist
 RUN rm -rf src benches crates/robot-kit/src crates/zeroclaw-types/src crates/zeroclaw-core/src
 
 # 2. Copy only build-relevant source paths (avoid cache-busting on docs/tests/scripts)
+COPY data/ data/
 COPY src/ src/
 COPY benches/ benches/
 COPY crates/ crates/
@@ -95,7 +97,8 @@ allow_public_bind = false
 EOF
 
 # ── Stage 2: Development Runtime (Debian) ────────────────────
-FROM debian:trixie-slim@sha256:1d3c811171a08a5adaa4a163fbafd96b61b87aa871bbc7aa15431ac275d3d430 AS dev
+#FROM debian:trixie-slim@sha256:1d3c811171a08a5adaa4a163fbafd96b61b87aa871bbc7aa15431ac275d3d430 AS dev
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/debian:bookworm as dev
 
 # Install essential runtime dependencies only (use docker-compose.override.yml for dev tools)
 RUN apt-get update && apt-get install -y \
@@ -129,7 +132,8 @@ ENTRYPOINT ["zeroclaw"]
 CMD ["gateway"]
 
 # ── Stage 3: Production Runtime (Distroless) ─────────────────
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:84fcd3c223b144b0cb6edc5ecc75641819842a9679a3a58fd6294bec47532bf7 AS release
+#FROM gcr.io/distroless/cc-debian13:nonroot@sha256:84fcd3c223b144b0cb6edc5ecc75641819842a9679a3a58fd6294bec47532bf7 AS release
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/gcr.io_distroless_cc-debian13:nonroot as release
 
 COPY --from=builder /app/zeroclaw /usr/local/bin/zeroclaw
 COPY --from=builder /zeroclaw-data /zeroclaw-data
