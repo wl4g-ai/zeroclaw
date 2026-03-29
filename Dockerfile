@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=registry.cn-shenzhen.aliyuncs.com/wl4g/docker_dockerfile:1.7
 
 # ── Stage 0: Frontend build ─────────────────────────────────────
 FROM node:22-alpine AS web-builder
@@ -9,7 +9,12 @@ COPY web/ .
 RUN npm run build
 
 # ── Stage 1: Build ────────────────────────────────────────────
+<<<<<<< Updated upstream
 FROM rust:1.94-slim@sha256:da9dab7a6b8dd428e71718402e97207bb3e54167d37b5708616050b1e8f60ed6 AS builder
+=======
+#FROM rust:1.93-slim@sha256:7e6fa79cf81be23fd45d857f75f583d80cfdbb11c91fa06180fd747fda37a61d AS builder
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/rust:1.93-slim as builder
+>>>>>>> Stashed changes
 
 WORKDIR /app
 ARG ZEROCLAW_CARGO_FEATURES="channel-lark,whatsapp-web"
@@ -93,7 +98,8 @@ RUN mkdir -p /zeroclaw-data/.zeroclaw /zeroclaw-data/workspace && \
     chown -R 65534:65534 /zeroclaw-data
 
 # ── Stage 2: Development Runtime (Debian) ────────────────────
-FROM debian:trixie-slim@sha256:f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba AS dev
+#FROM debian:trixie-slim@sha256:1d3c811171a08a5adaa4a163fbafd96b61b87aa871bbc7aa15431ac275d3d430 AS dev
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/debian:bookworm as dev
 
 # Install essential runtime dependencies only (use docker-compose.override.yml for dev tools)
 RUN apt-get update && apt-get install -y \
@@ -131,7 +137,12 @@ ENTRYPOINT ["zeroclaw"]
 CMD ["daemon"]
 
 # ── Stage 3: Production Runtime (Distroless) ─────────────────
+<<<<<<< Updated upstream
 FROM gcr.io/distroless/cc-debian13:nonroot@sha256:9c4fe2381c2e6d53c4cfdefeff6edbd2a67ec7713e2c3ca6653806cbdbf27a1e AS release
+=======
+#FROM gcr.io/distroless/cc-debian13:nonroot@sha256:84fcd3c223b144b0cb6edc5ecc75641819842a9679a3a58fd6294bec47532bf7 AS release
+FROM registry.cn-shenzhen.aliyuncs.com/wl4g/gcr.io_distroless_cc-debian13:nonroot as release
+>>>>>>> Stashed changes
 
 COPY --from=builder /app/zeroclaw /usr/local/bin/zeroclaw
 COPY --from=builder /zeroclaw-data /zeroclaw-data
